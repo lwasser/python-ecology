@@ -1,6 +1,6 @@
 # Combining DataFrames with pandas
 
-In many "real world" situations, the data we want to use come in multiple files, which we usually load into memory as mutiple pandas DataFrames. However, since many analysis tools expect the data to be in a single DataFrame, we need ways of combining multiple DataFrames together. The pandas package provides [various methods for combining DataFrames](http://pandas.pydata.org/pandas-docs/stable/merging.html).
+In many "real world" situations, the data that we want to use come in multiple files. We often need to combine these files into a single DataFrame to analyze the data. The pandas package provides [various methods for combining DataFrames](http://pandas.pydata.org/pandas-docs/stable/merging.html) including `merge` and `concat`.
 
 
 #Learning Objectives
@@ -55,7 +55,7 @@ Out [5]:
 
 # Concatenating DataFrames
 
-We can use the `concat` function in Pandas to append either columns or rows from one DataFrame to another.  
+We can use the `concat` function in Pandas to append either columns or rows from one DataFrame to another.  Let's grab twho subsets of our data to see how this works.
 
 	#read in first 10 lines of surveys table
 	surveySub = surveys_df.head(10)
@@ -85,24 +85,36 @@ When you are finished merging your DataFrames, you might want to export the data
 Check out your working directory to make sure the csv wrote out properly, and that you can open it! If you want, try to bring it back into python to make sure it imports properly.
 
 ## Challenge
-# note -- this isn't very challenging!
-In the data folder, there are two survey data files:  `survey2001.csv` and `survey2002.csv`. One contains data from 2001 and the other contains data from 2002. Read the data into python and combine the files to make one new data frame. Export your results as a csv and make sure it reads back into python properly.
 
+In the data folder, there are two survey data files:  `survey2001.csv` and `survey2002.csv`. One contains data from 2001 and the other contains data from 2002. Read the data into python and combine the files to make one new data frame. Create a plot of average plot weight by year grouped by sex. Export your results as a csv and make sure it reads back into python properly.
+
+# note -- this isn't very challenging! 
 
 # Joining DataFrames
 
-One common way to combine DataFrames is to use columns in each dataset that contain common values. The process of combining DataFrames in this way is called "joining", and the columns containing the common values are called "join key(s)".  Joining DataFrames in this way is often useful when one DataFrame is a "lookup table" containing additional data that we want to include in the other. 
+When we concatenated our DataFrames we simply added them to each other - stacking them either vertically or side by side.  Another way to combine DataFrames is to use columns in each dataset that contain common values (a common unique id). Combining DataFrames using a common field is called "joining". The columns containing the common values are called "join key(s)".  Joining DataFrames in this way is often useful when one DataFrame is a "lookup table" containing additional data that we want to include in the other. 
 
-NOTE: This process of joining tables is similar to what we do with tables in SQL!
+NOTE: This process of joining tables is similar to what we do with tables in SQL.
+
+For example, the species.csv file that we've been working with is a lookup table. This table contains the genus, species and taxa code for 55 species. The species code is unique for each line. These species are identified in our Survey data as well using the unique species code. Rather than adding 3 more columns for the genus, species and taxa to each of the 35,549 line Survey data table, we can maintain the shorter table with the species information. When we want to access that information, we can create a query that joins the additional information to the Survey data. 
+
+Storing data in this easy does a few things for us:
+
+1. it ensures consistency in the spelling of species attributes (genus, species and taxa) given each species is only entered once. 
+2. It also makes it easy for us to make changes to the species information once without having to find each instance of it in the larger survey data.
+3. It optimizes the size of our data. 
+4. And more!
+
+## Joining Two DataFrames 
 
 To better understand joins, let's grab the first 10 lines of our data as a subset to work with. We'll use the `.head` attribute to do this. We'll also read in a subset of the species table. 
 
 	#read in first 10 lines of surveys table
 	surveySub = surveys_df.head(10)
-	
+	#import a small subset of the species data designed for this part of the lesson
 	speciesSub = pd.read_csv('data/biology/speciesSubset.csv', keep_default_na=False, na_values=[""])
 
-In this example, "speciesSub" is the lookup table containing genus, species, and taxa names that we want to join with the data in "surveySub" to produce a new DataFrame that contains all the columns from both "species_df" *and* "survey_df".
+In this example, "speciesSub" is the lookup table containing genus, species, and taxa names that we want to join with the data in "surveySub" to produce a new DataFrame that contains all of the columns from both "species_df" *and* "survey_df".
 
 
 ## Identifying join keys
@@ -110,8 +122,11 @@ In this example, "speciesSub" is the lookup table containing genus, species, and
 To identify appropriate join keys we first need to know which field(s) are shared between the files (DataFrames). We might inspect both DataFrames to identify these columns. If we are lucky, both DataFrames will have columns with the same name that also contain the same data. If we are less lucky, we need to identify a (differently-named) column in each DataFrame that contains the same information.
 
 ```python
-	speciesSub.columns
-	surveySub.columns
+>>> speciesSub.columns
+Out[32]: Index([u'species_id', u'genus', u'species', u'taxa'], dtype='object')
+
+>>>	surveySub.columns
+Out[33]: Index([u'record_id', u'month', u'day', u'year', u'plot', u'species', u'sex', u'wgt'], dtype='object')
 ```
 
 In our example, the join key is the column containing the two-letter species identifier, which is called `species` in `surveys_df` and `species_id` in `species_df`.
@@ -119,12 +134,16 @@ In our example, the join key is the column containing the two-letter species ide
 
 ## Inner joins
 
-There are [different types of joins.](http://blog.codinghorror.com/a-visual-explanation-of-sql-joins/).
+Now that we know the fields with the common species ID attributes in each DataFrame, we are ready to join are data. However there are [different types of joins.](http://blog.codinghorror.com/a-visual-explanation-of-sql-joins/). We also need to decide which type if joins makes sense for our analysis.
 
-The most common type of join is called an _inner join_. An inner join combines two DataFrames based on a join key and returns a new DataFrame that contains only those rows that have matching values in *both* of the original DataFrames.
+The most common type of join is called an _inner join_. An inner join combines two DataFrames based on a join key and returns a new DataFrame that contains **only** those rows that have matching values in *both* of the original DataFrames. 
+
+Inner joins yield a DataFrame that contains only rows where the value being joins exists in BOTH tables. An example of an inner join, adapted from [this page](http://blog.codinghorror.com/a-visual-explanation-of-sql-joins/) is below:
+
+![Inner join -- courtesy of codinghorror.com](http://blog.codinghorror.com/content/images/uploads/2007/10/6a0120a85dcdae970b012877702708970c-pi.png)
 
 
-The pandas function for performing joins is called `merge` and is invoked as follows:
+The pandas function for performing joins is called `merge` and an Inner join is the default option:  
 
 ```python
 	merged_inner = pd.merge(left=surveys_df, right=species_df, left_on='species', right_on='species_id')
@@ -149,27 +168,20 @@ The pandas function for performing joins is called `merge` and is invoked as fol
 
 
 	
+The result of an inner join of `surveySub` and `speciesSub` is a new DataFrame that contains the combined set of columns from `surveySub` and `speciesSub`. It *only* contains rows that have two-letter species codes that are the same in both the surveysSub and speciesSub DataFrames. In other words, if a row in `surveySub` has a value of `species` that does *not* appear in the `species_id` column of `species`, it will not be included in the DataFrame returned by an inner join.  Similarly, if a row in `speciesSub` has a value of `species_id` that does *not* appear in the `species` column of `surveySub`, that row will not be included in the DataFrame returned by an inner join.
 
-Inner joins yield a DataFrame that contains only rows where the value being joins exists in BOTH tables. An example of an inner join, adapted from [this page](http://blog.codinghorror.com/a-visual-explanation-of-sql-joins/) is below:
-
-![Inner join -- courtesy of codinghorror.com](http://blog.codinghorror.com/content/images/uploads/2007/10/6a0120a85dcdae970b012877702708970c-pi.png)
-
-The result of an inner join of `surveySub` and `speciesSub` is a new DataFrame that contains the combined set of columns from `surveySub` and `speciesSub` but *only* those rows that have matching two-letter species codes in both. In other words, if a row in `surveySub` has a value of `species` that does *not* appear in the `species_id` column of `species`, it will not be included in the DataFrame returned by an inner join.  Similarly, if a row in `speciesSub` has a value of `species_id` that does *not* appear in the `species` column of `surveySub`, that row will not be included in the DataFrame returned by an inner join.
-
-The two DataFrames we want to join are passed to the `merge` function using the `left` and `right` argument; for inner joins, which DataFrame is passed using the `left` argument and which is passed using `right` does not matter.
-
-The `left_on='species'` argument tells `merge` to use the `species` column as the join key from `surveySub` (the `left` DataFrame). Similarly , the `right_on='species_id'` argument tells `merge` to use the `species_id` column as the join key from `speciesSub` (the `right` DataFrame).
+The two DataFrames that we want to join are passed to the `merge` function using the `left` and `right` argument. The `left_on='species'` argument tells `merge` to use the `species` column as the join key from `surveySub` (the `left` DataFrame). Similarly , the `right_on='species_id'` argument tells `merge` to use the `species_id` column as the join key from `speciesSub` (the `right` DataFrame). For inner joins, the order of the `left` and `right` arguments does not matter.
 
 The result `merged_inner` DataFrame contains all the columns from `surveySub` (record id, month, day, etc.) as well as all the columns from `speciesSub` (species id, genus, species, and taxa). Because both original DataFrames contain a column named `species`, pandas automatically appends a `_x` to the column name from the `left` DataFrame and a `_y` to the column name from the `right` DataFrame.
 
-Notice that `merged_inner` has fewer rows than `surveys_df`. This is an indication that there were rows in `surveys_df` with value(s) for `species` that do not exist as value(s) for `species_id` in `species_df`.
+Notice that `merged_inner` has fewer rows than `surveysSub`. This is an indication that there were rows in `surveys_df` with value(s) for `species` that do not exist as value(s) for `species_id` in `species_df`.
 
 
 ## Left joins
 
-What if we want to add information from `speciesSub` to `surveysSub` without losing any of the information from `surveySub`? In this case, we use a different type of join called a "left outer join", or more briefly, a "left join".
+What if we want to add information from `speciesSub` to `surveysSub` without losing any of the information from `surveySub`? In this case, we use a different type of join called a "left outer join", or a "left join".
 
-Like an inner join, a left join uses join keys to combine two DataFrames. Unlike an inner join, a left join will return *all* the rows from the `left` DataFrame, even those rows whose join key(s) do not have values in the `right` DataFrame.  Rows in the `left` DataFrame that are missing values for the join key(s) in the `right` DataFrame will simply have null (i.e., NaN or None) values for those columns in the resulting joined DataFrame.
+Like an inner join, a left join uses join keys to combine two DataFrames. Unlike an inner join, a left join will return *all* of the rows from the `left` DataFrame, even those rows whose join key(s) do not have values in the `right` DataFrame.  Rows in the `left` DataFrame that are missing values for the join key(s) in the `right` DataFrame will simply have null (i.e., NaN or None) values for those columns in the resulting joined DataFrame.
 
 Note: a left join will still discard rows from the `right` DataFrame that do not have values for the join key(s) in the `left` DataFrame.
 
@@ -229,4 +241,5 @@ Create a new DataFrame by joining the contents of the surveys.csv and species.cs
 
 1. In the data folder, there is a plot `CSV` that contains information about the type associated with each plot. Use that data to summarize the number of plots by plot type. 
 
-# WOULD LIKE TO COME UP WIHT A FEW OTHER CHALLENGE ACTIVITIES That are more challenging. Maybe something that uses plot type species and surveys together to aggregate??
+# WOULD LIKE TO COME UP WIHT A FEW OTHER CHALLENGE ACTIVITIES 
+# it could be cool to have them create a species diversity index for each plot and then plot that. they'd have to do some summary stats and math and then plot. That could be fun and  more challenging. Maybe something that uses plot type species and surveys together to aggregate??
