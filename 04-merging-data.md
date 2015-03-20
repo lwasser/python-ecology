@@ -84,6 +84,11 @@ When you are finished merging your DataFrames, you might want to export the data
 
 Check out your working directory to make sure the csv wrote out properly, and that you can open it! If you want, try to bring it back into python to make sure it imports properly.
 
+## Challenge
+# note -- this isn't very challenging!
+In the data folder, there are two survey data files:  `survey2001.csv` and `survey2002.csv`. One contains data from 2001 and the other contains data from 2002. Read the data into python and combine the files to make one new data frame. Export your results as a csv and make sure it reads back into python properly.
+
+
 # Joining DataFrames
 
 One common way to combine DataFrames is to use columns in each dataset that contain common values. The process of combining DataFrames in this way is called "joining", and the columns containing the common values are called "join key(s)".  Joining DataFrames in this way is often useful when one DataFrame is a "lookup table" containing additional data that we want to include in the other. 
