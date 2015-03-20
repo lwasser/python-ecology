@@ -6,6 +6,7 @@ In many "real world" situations, the data we want to use come in multiple files,
 #Learning Objectives
 * Learn how to concatenate two DataFrames together (append one dataFrame to a second dataFrame)
 * Learn how to join two DataFrames together using a uniqueID found in both DataFrames
+* Learn how to write out a DataFrame to csv using Pandas
 
 
 To work through the examples below, we first need to load the species and surveys files into pandas DataFrames. In iPython:
@@ -51,6 +52,7 @@ Out [5]:
 [55 rows x 4 columns]
 ```
 
+
 # Concatenating DataFrames
 
 We can use the `concat` function in Pandas to append either columns or rows from one DataFrame to another.  
@@ -64,11 +66,19 @@ We can use the `concat` function in Pandas to append either columns or rows from
 When we concatenate DataFrames, we need to specify the axis. `axis=0` tells Pandas to stack the second DataFrame under the first one. It will automatically detect whether the column names are the same and will stack accordingly. `axis=0` will stack the columns in the second DataFrame to the RIGHT of the first DataFrame
 
 	#stack the DataFrames on top of each other
-	pd.concat([surveySub, surveySubLast10], axis=0)
+	verticalStack=pd.concat([surveySub, surveySubLast10], axis=0)
 	#Place the DataFrames side by side
-	pd.concat([surveySub, surveySubLast10], axis=1)
+	horizontalStack=pd.concat([surveySub, surveySubLast10], axis=1)
 
 
+## Writing Out Your Data
+
+When you are finished merging your DataFrames, you might want to export the data for future use. We can use the `to_csv` command to do this.
+
+	#need to test this to make sure it works
+	horizonalStack.to_csv('out.csv')
+
+Check out your working directory to make sure the csv wrote out properly, and that you can open it! If you want, try to bring it back into python to make sure it imports properly.
 
 # Joining DataFrames
 
@@ -198,11 +208,16 @@ The pandas `merge` function supports two other join types:
 
 * Full (outer) join: Invoked by passing `how='outer'` as an argument. This join type returns the all pairwise combinations of rows from both DataFrames; i.e., the result DataFrame will contain rows `(left_1, right_1)`, `(left_1, right_2)`, `(left_2, right_1)`, `(left_2, right_2)`, etc. This join type is very rarely used.
 
-#Challenge
+# Final Challenges
+
+##Challenge 1
 Create a new DataFrame by joining the contents of the surveys.csv and species.csv tables. Then calculate and plot the distribution of  
 
 1. taxa by plot 
 2. taxa by sex by plot  
 
+## Challenge 2
 
-# WOULD LIKE TO COME UP WIHT A FEW OTHER CHALLENGE ACTIVITIES
+1. In the data folder, there is a plot `CSV` that contains information about the type associated with each plot. Use that data to summarize the number of plots by plot type. 
+
+# WOULD LIKE TO COME UP WIHT A FEW OTHER CHALLENGE ACTIVITIES That are more challenging. Maybe something that uses plot type species and surveys together to aggregate??
