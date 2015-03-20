@@ -76,7 +76,11 @@ When we concatenate DataFrames, we need to specify the axis. `axis=0` tells Pand
 When you are finished merging your DataFrames, you might want to export the data for future use. We can use the `to_csv` command to do this.
 
 	#need to test this to make sure it works
-	horizonalStack.to_csv('out.csv')
+	verticalStack.to_csv('out.csv')
+	
+	#for kicks read it back into python and make sure all looks good
+	newOutput = pd.read_csv('verticalStack.csv', keep_default_na=False, na_values=[""])
+	
 
 Check out your working directory to make sure the csv wrote out properly, and that you can open it! If you want, try to bring it back into python to make sure it imports properly.
 
