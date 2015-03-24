@@ -153,6 +153,22 @@ dir(numbers)
 ['__add__', '__class__', '__contains__', ...]
 ```
 
+### Tuples
+
+A tuple is similar to a list in that it's a sequence of elements. However, tuples can not be changed (they are immutable). The syntax for a tuple parentheses `()`.
+
+```python
+#tuples use paratheses
+ATuple= (1,2,3)
+anotherTuple = ('blue','green','red')
+#notes lists uses square brackets
+AList = [1,2,3]
+```
+
+### Challenge
+1. What happens when you type `ATuple[2]=5` vs `AList[1]=5` ?
+2. Type `type(ATuple)` into python - what is the object type? 
+
 ### Dictionaries
 
 A **dictionary** is a container that holds pairs of objects - keys and values.

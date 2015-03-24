@@ -20,7 +20,7 @@ Python doesn't load all of the libraries available to it by default. We have to 
 
 
 ```python
-import pandas as pd
+	import pandas as pd
 ```
 
 Each time we call a function that's in a library, we use the syntax `LibraryName.FunctionName`. Adding the library name with a `.` before the function name tells python where to find the function. In the example above, we have imported pandas as pd. This means we don't have to type out `pandas` each time we call a pandas function. 
@@ -28,11 +28,12 @@ Each time we call a function that's in a library, we use the syntax `LibraryName
 
 ##Lesson Overview
 
-Now that we've gotten libraries out of the way, let's dig into some data. We are studying the species and weight of animals caught in plots in a study area.
-The data sets are stored in .csv (comma separated value) format. Within the `.csv` files, each row holds information for a single animal,
+We are studying the species and weight of animals caught in plots in a study area. The data sets are stored in .csv (comma separated value) format. Within the `.csv` files, each row holds information for a single animal,
 and the columns represent: record_id, month, day, year, plot, species, sex, wgt. 
 
 The first few rows of our first file look like this:
+
+```python
 
 "record_id","month","day","year", "plot","species","sex","wgt"
 
@@ -45,6 +46,7 @@ The first few rows of our first file look like this:
 "66","8","19","1977","4","DM","F","46"
 
 "67","8","19","1977","7","DM","M","36"
+```
 
 ### We want to:
 
@@ -52,7 +54,7 @@ The first few rows of our first file look like this:
 2. Calculate the average weight of all individuals sampled, by species.
 3. Plot the average weights by species and perhaps by plot too.
 
-We can automate the process above, using Python programming. It's efficient to spend time building the code to perform these tasks because once it's built, we can use it over and over on different datasets that use a similar format. This makes our methods easily reproducible.  We can also easily share our code with colleagues and they can replicate the same analysis.
+We can automate the process above, using Python programming. It's efficient to spend time building the code to perform these tasks because once it's built, we can use it over and over on different datasets that use a similar format. This makes our methods easily reproducible. We can also easily share our code with colleagues and they can replicate the same analysis.
 
 # Reading Data Using Pandas CSV
 We will begin by locating and reading our survey data which are in CSV format. We can use Pandas `read_csv` function to pull the file directly into a [DataFrame](http://pandas.pydata.org/pandas-docs/stable/dsintro.html#dataframe). 
@@ -64,7 +66,7 @@ A DataFrame is a 2-dimensional data structure that can store data of different t
 First, let's make sure the python Pandas library is loaded. We will import Pandas using the nickname `pd`. 
 
 ```python
-import pandas as pd
+	import pandas as pd
 ```
 
 Let's also import the OS library. This library will allow us to make sure we are in the correct working directory.[More about the OS Library](https://docs.python.org/2/library/os.html). If you are working in ipython notebook, be sure to start the notebook in the workshop repository. If you didn't do that you can always set the working directory using the code below.
@@ -77,8 +79,8 @@ Let's also import the OS library. This library will allow us to make sure we are
 ```	
 
 ```python
-#note the pd.read_csv is used because we imported pandas as pd
-pd.read_csv("data/surveys.csv")
+	#note the pd.read_csv is used because we imported pandas as pd
+	pd.read_csv("data/surveys.csv")
 ```
 
 The above command yields the **output** below:
@@ -113,10 +115,10 @@ surveys_df = pd.read_csv("data/surveys.csv")
 Notice when you assign the imported dataframe to a variable, python does not produce any output on the screen. We can print the `surveys_df` object by typing in its name into the python command prompt.
 
 ```python
-surveys_df
+	surveys_df
 ```
 
-which gives **output**
+which returns:
 
 
 ```
@@ -152,7 +154,7 @@ We can also use the `surveys_df.dtypes` command to view the data type for each c
 
 	surveys_df.dtypes
 
-which gives **output**:
+which returns:
 
 ```
 record_id      int64
@@ -169,24 +171,23 @@ We'll talk a bit more about what the different formats mean in a different lesso
 
 ### Useful Ways to View DataFrame objects in Python
 
-There are multiple methods that can be used to summarize and access the data stored in dataframes. Let's try out a few. Note that we call the method by using the object name `surveys_df.method`. So `surveys_df.columns` provides an index of all of the column names in our DataFrame. Try out some of the other methods below.  
+There are multiple methods that can be used to summarize and access the data stored in dataframes. Let's try out a few. Note that we call the method by using the object name `surveys_df.method`. So `surveys_df.columns` provides an index of all of the column names in our DataFrame. 
 
-#### Useful methods
-* `surveys_df.columns` - Display DataFrame column names
-* `surveys_df.head()` - Display first 5 rows of DataFrame
-* `surveys_df.tail()` - Display last 5 rows
-* `surveys_df.shape` - Display the shape (number of rows and columns, of the Object in a tuple format (rows, columns). [More on tuples, here](https://docs.python.org/2/tutorial/datastructures.html#tuples-and-sequences).
+##Challenges
+Try out the methods below to see what they return.
 
-#NOTE - we don't talk about TUPLES ###############################
-
-
-# NEED CHALLENGE __EXERCISES__
+1. `surveys_df.columns`  
+2. `surveys_df.head()`. Also, what does `surveys_df.head(15)` do?
+3. `surveys_df.tail()`.   
+4. `surveys_df.shape` - Take note of the output of the shape method. What format does it return the shape of the DataFrame in? 
+ 
+HINT:[More on tuples, here](https://docs.python.org/2/tutorial/datastructures.html#tuples-and-sequences).
 
 
 ## Calculating Statistics From Data In A Pandas DataFrame
 
 
-Now, we've read our data into Python. Next, let's perform some quick summary statistics to learn more about the data that we're working with. We might want to know how many animals were collected in each plot, or how many of each species were caught. We can perform summary stats quickly using groups. But first we need to figure out what we want to group by.
+We've read our data into Python. Next, let's perform some quick summary statistics to learn more about the data that we're working with. We might want to know how many animals were collected in each plot, or how many of each species were caught. We can perform summary stats quickly using groups. But first we need to figure out what we want to group by.
 
 Let's begin by exploring our data:
 
@@ -195,7 +196,7 @@ Let's begin by exploring our data:
 surveys_df.columns.values
 ```
 
-which gives **output**:
+which **returns**:
 
 ```
 array(['record_id', 'month', 'day', 'year', 'plot', 'species', 'sex', 'wgt'], dtype=object)
@@ -208,7 +209,7 @@ Let's get a list of all the species. The `pd.unique` function tells us all of th
 pd.unique(surveys_df.species)
 ```
 
-which gives **output**:
+which **returns**:
 
 	array(['NL', 'DM', 'PF', 'PE', 'DS', 'PP', 'SH', 'OT', 'DO', 'OX', 'SS',
     	   'OL', 'RM', nan, 'SA', 'PM', 'AH', 'DX', 'AB', 'CB', 'CM', 'CQ',
@@ -216,21 +217,60 @@ which gives **output**:
        	   'SC', 'BA', 'SF', 'RO', 'AS', 'SO', 'PI', 'ST', 'CU', 'SU', 'RX',
        	  'PB', 'PL', 'PX', 'CT', 'US'], dtype=object)
 
+## Challenges
+
+1. Create a list of unique plot ID's found in the surveys data. Call it `plotNames`. How many unique plots are there in the data? How many unique species are in the data?
 
 #Groups in Pandas
 
-We often want summary statistics calculated on subsets of our data. For example, we might want to calculate the average weight per plot. To do this, we use the `.groupby` method in pandas. Once we've created a groupby dataFrame, we can quickly calculate summary statistics by group. 
+We often want to calculate summary statistics grouped by subsets or attributes within fields of our data. For example, we might want to calculate the average weight of all individuals per plot. 
+
+We can also extract basic statistics for all rows in a column, individually using the syntax below:
+
+```python
+surveys_df['wgt'].describe()
+```
+gives **output**
+
+```python
+count    32283.000000
+mean        42.672428
+std         36.631259
+min          4.000000
+25%         20.000000
+50%         37.000000
+75%         48.000000
+max        280.000000
+dtype: float64
+```
+
+We can also extract one specific metric if we wish:
+
+```python
+surveys_df['wgt'].min()
+surveys_df['wgt'].max()
+surveys_df['wgt'].mean()
+surveys_df['wgt'].std()
+surveys_df['wgt'].count()
+```
+
+But if we want to summarize by one or more variables, for example  sex, we can use the `.groupby` method in Pandas. Once we've created a groupby DataFrame, we can quickly calculate summary statistics by a group of our choice. 
 
 ```python
 	#Group data by sex
-	sorted = df.groupby('sex')
+	sorted = surveys_df.groupby('sex')
+```
+
+The pandas  function  `describe` will return descriptive stats including: mean, median, max, min, std and count for a particular column in the data. Pandas `describe` function will only return summary values for columns containing numeric data.
+
+```python
 	#summary statistics for all numeric columns by sex
-	byPlot.describe()
+	sorted.describe()
 	#provide the mean for each numeric column by sex
-	byPlot.mean()
+	sorted.mean()
 ```	
 
-**OUTPUT:**
+`sorted.mean()` **OUTPUT:**
 
 ```python
         record_id        day         year       plot        wgt
@@ -243,20 +283,19 @@ Z    23839.000000  15.000000  1996.000000   3.000000  18.000000
 
 ```
 
-What is returned here is a set of average values for each column summarized by groups. What this also tells us is that there are some weird extra values in this column that we might  need to explore further. Unless we're working with butterflies, Z is unlikely to be a sex. This is why it's important to explore your data, before diving into analysis too quickly!
 
-	#we can sort by multiple columns too
-	sorted2 = surveys_df.groupby(['plot','sex'])
-	#look at means for each group identified above
+The `groupby` command is powerful in that it allows us to quickly generate summary stats. This is also useful for initial examination of our data. We can immediately notice some unusual values in our data that we might need to explore further. Unless we're working with butterflies, Z is unlikely to be a sex. Also it looks like there are no weight values for the species that is of sex "R". It is important to explore your data, before diving into analysis too quickly.
+
+#Challenge
+
+1. Have a look at the output of the `describe` method below. How many columns represent the sex "Z", "P" or "R". 
+2. What happens when you group by two columns using the syntax and then grab mean values: 
+	`sorted2 = surveys_df.groupby(['plot','sex'])`
 	sorted.mean()
+3. Summarize weight values for each plot in your data. HINT: you can use the following syntax only create summary statistics for one column in your data `byPlot['wgt'].describe()`	
 
-Let's create some more summary stats, this time by plot.
 
-	#let's group by plot
-	byPlot = surveys_df.groupby('plot')
-	byPlot['wgt'].describe()
-
-**A Snippet of the Output:**
+Did you get #3 right? **A Snippet of the Output from challenge 3 looks like:**
 
 	plot       
 	1     count    1903.000000
@@ -268,30 +307,37 @@ Let's create some more summary stats, this time by plot.
 	      75%        53.000000
 	      max       231.000000
 
+## Quickly Creating Summary Counts in Pandas
 
-Now let's see how many of each species we have. To do this, we can use the `nunique()` method which return a pandas SERIES of unique elements in the data and a n associated count of how many rows contain that unique element in the DataFrame.
+ Let's next create a list of unique species in our data. We can do this in a few ways. 
 
-```python
-surveys_df.record_id.groupby(surveys_df.species).nunique()
-```
-
-We can assign that series to a variable, to make it easier to work with.
+1. We can use the `nunique()` method which return a pandas SERIES of unique elements in the data and a n associated count of how many rows contain that unique element in the DataFrame.
 
 ```python
-species_table = surveys_df.record_id.groupby(surveys_df.species).nunique()
+species_list = surveys_df.record_id.groupby(surveys_df.species).nunique()
 ```
 
-Or, we can count just the rows that have the species "DO":  
+Or, we can also count just the rows that have the species "DO":  
 
 ```python
 surveys_df.record_id.groupby(surveys_df['species']).nunique()['DO']
 ```
 
+##Basic Math Functions
+If we wanted to, we could perform math on an entire column of our data. For example let's multiply all weight values 2. A more practical use of this might be to normalize the data according to a mean, area, or some other value calculated from our data.
 
-## Quick & Easy Plotting Data From Pandas
-We can plot our summary stats, too.
+	#multiply all weight values by 2
+	surveys_df['wgt']*2
 
-	#make sure figures appear inline
+
+##Another Challenge
+1. What's another way to create a list of species and associated `count` of the records in the data. Hint: you can perform `Count`, `Min`, etc functions on groupby DataFrames in the same way you can perform them on regular DataFrames.
+
+
+# Quick & Easy Plotting Data Using Pandas
+We can plot our summary stats using Pandas, too.
+
+	#make sure figures appear inline in Ipython Notebook
 	%matplotlib inline
 	#create a quick bar chart
 	species_table.plot(kind='bar');
@@ -314,42 +360,6 @@ total_count.plot(kind='bar');
 3. Create a stacked bar plot that has male vs female for each plot 
 
 
-Next, let's perform some actual calculations on the data. 
-
-##Basic Math Functions
-If we wanted to, we could perform math on an entire column of our data. For example we might multiple weight by 2. A more practical use of this might be to normalize the data according to a mean, area, or some other value.
-
-	#multiply all weight values by 2
-	surveys_df['wgt']*2
-
-Let's calculate the average weight of all of the animals recorded in the data. To calculate average weight, we can use the Pandas function function `describe`. The describe function will return descriptive stats including: mean, median, max, min, std and count for a particular column in the data. Pandas `describe` function can be only used on a column containing numeric data.
-
-```python
-surveys_df['wgt'].describe()
-```
-gives **output**
-
-```python
-count    32283.000000
-mean        42.672428
-std         36.631259
-min          4.000000
-25%         20.000000
-50%         37.000000
-75%         48.000000
-max        280.000000
-dtype: float64
-```
-
-We can also extract these statistics individually using the syntax below:
-
-```python
-surveys_df['wgt'].min()
-surveys_df['wgt'].max()
-surveys_df['wgt'].mean()
-surveys_df['wgt'].std()
-surveys_df['wgt'].count()
-```
 
 
 #Summary Plotting Challenge
