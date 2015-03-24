@@ -1,6 +1,6 @@
 
 #Indexing, Slicing and Subsetting DataFrames in Python
-In lesson 01, we covered reading a CSV into python using Pandas. We learned how to save the data as an object with a variable name, how to perform basic math on the data, how to calculate summary stats and how to create plots of the data. In this lesson, we will explore ways to subset and access different parts of the data through indexing, slicing and subsetting. 
+In lesson 01, we read a CSV into a python Pandas DataFrame. We learned how to save the DataFrame to a named object, how to perform basic math on the data, how to calculate summary statistics and how to create plots of the data. In this lesson, we will explore ways access different parts of the data using indexing, slicing and subsetting. 
 
 ## Learning Objectives
 
@@ -15,62 +15,70 @@ In lesson 01, we covered reading a CSV into python using Pandas. We learned how 
 We will continue to use the surveys dataset that we worked with in the last exercise. Let's reopen it:
 
 ```python
-#first make sure pandas is loaded
-import pandas as pd
-#read in the surveys csv
-surveys_df=pd.read_csv("data/surveys.csv")
+	#first make sure pandas is loaded
+	import pandas as pd
+	#read in the surveys csv
+	surveys_df=pd.read_csv("data/surveys.csv")
 ```
 
-# Extracting and Viewing Slices of our DataFrame - Indexing & Slicing in Python
-We often want to work with subsets of a **DataFrame** object. There are different ways to accomplish this, using labels (column headings), numeric ranges or specific x,y index locations. 
+# Indexing & Slicing in Python
+We often want to work with subsets of a **DataFrame** object. There are different ways to accomplish this including: using labels (column headings), numeric ranges or specific x,y index locations. 
 
 
 ##Selecting Data Using Labels (Column Headings)
 
-We use square brackets `[]` to select a subset of an Python object. For example, we can select a column within the surveys_df DataFrame by name:
+We use square brackets `[]` to select a subset of an Python object. For example, we can select all of data from a column named `species` from the `surveys_df` DataFrame by name:
 
+```python
 	surveys_df['species']
-	#the syntax below gives you the same output
+	#this syntax, calling the column as an attribute, gives you the same output
 	surveys_df.species
+```
 
-We can also create an object with a variable name that is a subset of a dataset we are working with. 
+We can also create an new object that contains the data within the species column as follows:
 
-	#create an object named surveys_species that just contains the species column from the surveys_df DataFrame
+```python
+	#create an object named surveys_species that only contains the species column
 	surveys_species=surveys_df['species']
+```
 
-We can pass a list of column names to as an index to select columns in that order. This is useful for applying a function (like transform) to a subset of your columns.  
+We can pass a list of column names too, as an index to select columns in that order. This is useful when we need to reorganize our data.  
 
 **NOTE:** If a column name is not contained in the DataFrame, an exception (error) will be raised. 
 	
+```python
 	#select the species and plot columns from the DataFrame
 	surveys_df[['species', 'plot']]
+	#what happens when you flip the order?
+	surveys_df[['plot', 'species']]
+```
 
-We can also access columns within DataFrames as an attribute:
-
-	surveys_df.wgt
 
 ##Extracting Range based Subsets: Slicing 
 
-### REMINDER: Python Uses 0-based Indexing
+** REMINDER**: Python Uses 0-based Indexing
 
-Before we dig into python, let's remind ourselves that Python uses 0-based indexing. This means that the first element in an object is located at position 0. This is different from other tools like R and Matlab that index objects starting at 1. 
+Before we dig into python, let's remind ourselves that Python uses 0-based indexing. This means that the first element in an object is located at position 0. This is different from other tools like R and Matlab that index elements within objects starting at 1. 
 
 	#Create a list of numbers:
 	a=[1,2,3,4,5]
-	#what value does the code below return?
-	a[0]
-	#how about this code:
-	a[5]
-	#or this?
-	a[len(a)]
 
-In the example above, calling a[5] returns an error. Why is that?
+
+## Challenges
+
+1. 	What value does the code below return?
+	a[0]
+2. How about this code:
+	a[5]
+3. Or this?
+	a[len(a)]
+4. In the example above, calling a[5] returns an error. Why is that?
 
 ##Slicing Subsets of Rows in Python
 
-Slicing using the [] operator selects a set of rows and/or columns from a DataFrame. To slice out a set of rows, you use the following syntax:  `data[start:stop]`. When slicing in pandas the start bound is included in the output. The stop bound is one step BEYOND the row you want to select. SO if you want to select rows 0, 1 and 2 your code would look like this: 
+Slicing using the [] operator selects a set of rows and/or columns from a DataFrame. To slice out a set of rows, you use the following syntax:  `data[start:stop]`. When slicing in pandas the start bound is included in the output. The stop bound is one step BEYOND the row you want to select. So if you want to select rows 0, 1 and 2 your code would look like this: 
 
-	#select rows 0,1,2 (but not 3!!)
+	#select rows 0,1,2 (but not 3)
 	surveys_df[0:3]. 
 
 The stop bound in Python is different from what you might be used to in languages like Matlab and R.
@@ -83,21 +91,21 @@ The stop bound in Python is different from what you might be used to in language
 	surveys_df[-1:]
 
 
-We can also create new objects by slicing out parts of a DataFrame. 
+We can also reassign values within subsets of our DataFrame. 
 
-	#copy the surveys dataframe
-	surveys_copy=dat
+	#copy the surveys dataframe so we don't modify the original DataFrame
+	surveys_copy=surveys_df
 	
-	#set the first three rows of data in the dataframe to 0
+	#set the first three rows of data in the DataFrame to 0
 	surveys_copy[0:3]=0
 
 ## Slicing Subsets of Rows and Columns in Python
 
-We can also select specific ranges of our data in both the row and column direction using the `loc` and `iloc` arguments. The `loc` argument allows you to select data using labels AND numeric integer locations. `iloc` only allows you to select ranges using labels, `loc` only accepts integer index values.
+We can  select specific ranges of our data in both the row and column direction using the `loc` and `iloc` arguments. The `loc` argument allows you to select data using labels AND numeric integer locations. Put another way, `loc` only accepts integer index values. `iloc` only allows you to select ranges using labels. 
 
-NOTE: Index values and labels must be in the DataFrame or you will get a KeyError. Remember that the start bound and the stop bound are included. When using `loc` Integers can be used, but they refer to the index label and not the position.
+NOTE: Index values and labels must be found in the DataFrame or you will get a KeyError. Remember that the start bound and the stop bound are included. When using `loc` Integers can be used, but they refer to the index label and not the position. Thus when you use loc, and select 1:4, you will get a different result than using iloc to select rows 1:4.
 
-To select a subset of rows AND columns from our DataFrame, we need to use the `iloc` method. For example, we can select month, day and year (columns 2,3 and 4 if we start counting at 1), like this:
+To select a subset of rows AND columns from our DataFrame, we can use the `iloc` method. For example, we can select month, day and year (columns 2,3 and 4 if we start counting at 1), like this:
 
 ```python
 dat.iloc[0:3, 1:4]
@@ -112,22 +120,24 @@ which gives **output**
 
 Notice that we asked for a slice from 0:3. This yielded 3 rows of data. When you ask for 0:3, you are actually telling python to start at index 0 and select rows 0,1,2 **up to but not including 3**.
 
-Explore some other ways to index and select subsets of data:
 
+Let's next explore some other ways to index and select subsets of data:
+
+```python
 	#select all columns for rows of index values 0 and 10
-	dat.loc[[0,10],:]
+	surveys_df.loc[[0,10],:]
 	#what does this do?
-	dat.loc[0,['species', 'plot','wgt']]
+	surveys_df.loc[0,['species', 'plot','wgt']]
 	
 	#What happens when you type the code below?
-	dat.loc[[0,10,35549],:]
+	surveys_df.loc[[0,10,35549],:]
+```
 
-
-We can also select a data value according to the specific row and column location within the data frame using the `iloc` function: `dat.iloc[row,column]`.
+We can also select a specific data value according to the specific row and column location within the data frame using the `iloc` function: `dat.iloc[row,column]`.
 
 
 ```python
-dat.iloc[2,6]
+surveys_df.iloc[2,6]
 ```
 
 which gives **output**
@@ -146,6 +156,8 @@ Remember that Python indexing begins at 0. So, the index location [2, 6] selects
 	surveys_df[:5]
 	surveys_df[-1:]
 ```
+
+2. What happens when you call `dat.iloc[0:4, 1:4]` vs `dat.loc[0:4, 1:4]`. How are the two commands different?
 
 ##Subsetting Data Using Criteria
 
@@ -201,16 +213,13 @@ Use can use the syntax below when querying data from a DataFrame. Experiment wit
 
 ## Challenge Activities
 
-1. You can use double equal signs `==` as for equal to in python. Use `!=` for no equal to. 
+1. Select a subset of rows in the surveys_df DataFrame that contain data from the year, 1999 and that contains weight values less than or equal to 8. How many columns did you end up with? What did your neighbor get?
 
-	Select a subset of rows in the surveys_df DataFrame that represent data from the year, 2002. 
-	
-	Now, select a subset of rows in the surveys_df DataFrame that represent data from all years EXCEPT 2002. 
+2. You can use the `isin` command in python to query a DataFrame based upon a list of values as follows: 
+	`surveys_df[surveys_df['sex'].isin([listGoesHere])]` 
+Use the `isin` function to find all plots that contain species of sex "Z" or sex "R" or sex "P" in the surveys DataFrame. How many records contain these values? 
+3. Experiment with other queries to find data that are a) missing b, 
 
-2. You can also combine queries to search for and extract a range of values using the query syntax:
-	`(surveys_df.year>=1980) & (surveys_df.year<=1985)`
-	Create an objected called years that contains all rows that contain data between the years of 1990 and 1995. 
-	
 
 # Using Masks
 ----
@@ -256,10 +265,16 @@ A snippet of the output is below:
 
 [35549 rows x 8 columns]
 ```
+But what if we just want to select the rows where there are null values? To do that we can use the mask as a index to subset our data with as follows:
+
+```python
+	#select only the rows that contain NaN values
+	surveys_df[pd.isnull(surveys_df) ]
+```
 
 Note that there are many null or NaN values in the wgt columns of our DataFrame. We will explore different ways of dealing with these in Lesson 03.
 
-We can run `isnull`	on a column too. what does the code below do? 
+We can run `isnull`	on a particular column too. What does the code below do? 
 
 	#what does this do?
 	emptyWeights = surveys_df[pd.isnull(surveys_df.wgt)]
@@ -267,49 +282,10 @@ We can run `isnull`	on a column too. what does the code below do?
 Let's take a minute to look at the statement above. We are using the Boolean object as an index. We are asking python to select rows that have a `NaN` value for weight. 
 
 
-This can also be accomplished for individual columns
+#Challenges
 
-```python
->>> pd.isnull(mydata.year)
-```
-
-```python
-0     False
-1     False
-2     False
-3     False
-4     False
-5     False
-6     False
-7     False
-8     False
-9     False
-10    False
-11    False
-12    False
-13    False
-14    False
-...
-35534    False
-35535    False
-35536    False
-35537    False
-35538    False
-35539    False
-35540    False
-35541    False
-35542    False
-35543    False
-35544    False
-35545    False
-35546    False
-35547    False
-35548    False
-Name: year, Length: 35549, dtype: bool
-```
-
-# need some better challenge activities
-# is there more that we can do with booleans here???
+1. Create a new DataFrame that only contains observations with sex values that are **not** female or male. Assign each sex value in the new DataFrame to a new value of 'x'. Determine the number of null values in the subset.
+2. Create a new DataFrame that contains only observations that are of sex male or female and where weight values are greater than 0. Create a stacked bar plot of average weight by plot with male vs female values stacked for each plot. 
 
 
 ##############
