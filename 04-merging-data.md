@@ -12,12 +12,16 @@ In many "real world" situations, the data that we want to use come in multiple f
 To work through the examples below, we first need to load the species and surveys files into pandas DataFrames. In iPython:
 
 ```python
-In  [1]: import pandas as pd
-In  [2]: surveys_df = pd.read_csv('data/surveys.csv', keep_default_na=False, na_values=[""])
-In  [3]: species_df = pd.read_csv('data/species.csv', keep_default_na=False, na_values=[""])
+	import pandas as pd
+	surveys_df = pd.read_csv('data/surveys.csv', keep_default_na=False, na_values=[""])
+	species_df = pd.read_csv('data/species.csv', keep_default_na=False, na_values=[""])
+	surveys_df
+```
 
-In  [4]: surveys_df
-Out [4]:
+**Output: **
+
+```Python
+
        record_id  month  day  year  plot species  sex  wgt
 0              1      7   16  1977     2      NA    M  NaN
 1              2      7   16  1977     3      NA    M  NaN
@@ -33,9 +37,14 @@ Out [4]:
 
 [35549 rows x 8 columns]
 
+```
 
-In  [5]: species_df
-Out [5]:
+```python
+
+	species_df
+```
+
+```python
    species_id             genus          species                   taxa
 0          AB        Amphispiza        bilineata                   Bird
 1          AH  Ammospermophilus          harrisi    Rodent-not censused
@@ -52,6 +61,8 @@ Out [5]:
 [55 rows x 4 columns]
 ```
 
+Take note that the import CSV command used has some additional variables which we didn't user previously. Many functions in python have a set of options that can be set by the user if needed. In this case, we have told Pandas to assign empty values in our CSV to NaN `keep_default_na=False, na_values=[""]`. [http://pandas.pydata.org/pandas-docs/dev/generated/pandas.io.parsers.read_csv.html](More about all of the read_csv options here.)
+
 
 # Concatenating DataFrames
 
@@ -63,7 +74,7 @@ We can use the `concat` function in Pandas to append either columns or rows from
 	surveySubLast10 = surveys_df[-10:-1]
 	
 
-When we concatenate DataFrames, we need to specify the axis. `axis=0` tells Pandas to stack the second DataFrame under the first one. It will automatically detect whether the column names are the same and will stack accordingly. `axis=0` will stack the columns in the second DataFrame to the RIGHT of the first DataFrame
+When we concatenate DataFrames, we need to specify the axis. `axis=0` tells Pandas to stack the second DataFrame under the first one. It will automatically detect whether the column names are the same and will stack accordingly. `axis=0` will stack the columns in the second DataFrame to the RIGHT of the first DataFrame. To stack the data vertically, we need to make sure we have the same columns and associated column format in both datasets. When we stack horizonally, we want to make sure what we are doing makes sense (ie the data are related in some way).
 
 	#stack the DataFrames on top of each other
 	verticalStack=pd.concat([surveySub, surveySubLast10], axis=0)
@@ -73,34 +84,37 @@ When we concatenate DataFrames, we need to specify the axis. `axis=0` tells Pand
 
 ## Writing Out Your Data
 
-When you are finished merging your DataFrames, you might want to export the data for future use. We can use the `to_csv` command to do this.
+When you are finished merging your DataFrames, you might want to export the data for future use. We can use the `to_csv` command to do this. Note that the code below will by default save the data into the current working directory. We could save it to a different folder by adding the foldername and a slash to the file `verticalStack.to_csv('foldername/out.csv')`.
 
-	#need to test this to make sure it works
+```Python
+	#Write DataFrame to CSV 
 	verticalStack.to_csv('out.csv')
-	
-	#for kicks read it back into python and make sure all looks good
-	newOutput = pd.read_csv('verticalStack.csv', keep_default_na=False, na_values=[""])
+```
 	
 
-Check out your working directory to make sure the csv wrote out properly, and that you can open it! If you want, try to bring it back into python to make sure it imports properly.
+Check out your working directory to make sure the CSV wrote out properly, and that you can open it! If you want, try to bring it back into python to make sure it imports properly.
+
+```Python	
+	#for kicks read our output back into python and make sure all looks good
+	newOutput = pd.read_csv('verticalStack.csv', keep_default_na=False, na_values=[""])
+```
 
 ## Challenge
 
-In the data folder, there are two survey data files:  `survey2001.csv` and `survey2002.csv`. One contains data from 2001 and the other contains data from 2002. Read the data into python and combine the files to make one new data frame. Create a plot of average plot weight by year grouped by sex. Export your results as a csv and make sure it reads back into python properly.
+In the data folder, there are two survey data files:  `survey2001.csv` and `survey2002.csv`. One contains data from 2001 and the other contains data from 2002. Read the data into python and combine the files to make one new data frame. Create a plot of average plot weight by year grouped by sex. Export your results as a CSV and make sure it reads back into python properly.
 
-# note -- this isn't very challenging! 
 
 # Joining DataFrames
 
-When we concatenated our DataFrames we simply added them to each other - stacking them either vertically or side by side.  Another way to combine DataFrames is to use columns in each dataset that contain common values (a common unique id). Combining DataFrames using a common field is called "joining". The columns containing the common values are called "join key(s)".  Joining DataFrames in this way is often useful when one DataFrame is a "lookup table" containing additional data that we want to include in the other. 
+When we concatenated our DataFrames we simply added them to each other - stacking them either vertically or side by side. Another way to combine DataFrames is to use columns in each dataset that contain common values (a common unique id). Combining DataFrames using a common field is called "joining". The columns containing the common values are called "join key(s)". Joining DataFrames in this way is often useful when one DataFrame is a "lookup table" containing additional data that we want to include in the other. 
 
-NOTE: This process of joining tables is similar to what we do with tables in SQL.
+NOTE: This process of joining tables is similar to what we do with tables in a database like SQL.
 
-For example, the species.csv file that we've been working with is a lookup table. This table contains the genus, species and taxa code for 55 species. The species code is unique for each line. These species are identified in our Survey data as well using the unique species code. Rather than adding 3 more columns for the genus, species and taxa to each of the 35,549 line Survey data table, we can maintain the shorter table with the species information. When we want to access that information, we can create a query that joins the additional information to the Survey data. 
+For example, the species.csv file that we've been working with is a lookup table. This table contains the genus, species and taxa code for 55 species. The species code is unique for each line. These species are identified in our Survey data as well using the unique species code. Rather than adding 3 more columns for the genus, species and taxa to each of the 35,549 line Survey data table, we can maintain the shorter table with the species information. When we want to access that information, we can create a query that joins the additional columns of information to the Survey data. 
 
-Storing data in this easy does a few things for us:
+Storing data in this way has many benefits including: 
 
-1. it ensures consistency in the spelling of species attributes (genus, species and taxa) given each species is only entered once. 
+1. it ensures consistency in the spelling of species attributes (genus, species and taxa) given each species is only entered once. Imagine the possibilities for spelling errors when entering the genus and species thousands of times!
 2. It also makes it easy for us to make changes to the species information once without having to find each instance of it in the larger survey data.
 3. It optimizes the size of our data. 
 4. And more!
@@ -109,10 +123,12 @@ Storing data in this easy does a few things for us:
 
 To better understand joins, let's grab the first 10 lines of our data as a subset to work with. We'll use the `.head` attribute to do this. We'll also read in a subset of the species table. 
 
+```Python
 	#read in first 10 lines of surveys table
 	surveySub = surveys_df.head(10)
 	#import a small subset of the species data designed for this part of the lesson
 	speciesSub = pd.read_csv('data/biology/speciesSubset.csv', keep_default_na=False, na_values=[""])
+```
 
 In this example, "speciesSub" is the lookup table containing genus, species, and taxa names that we want to join with the data in "surveySub" to produce a new DataFrame that contains all of the columns from both "species_df" *and* "survey_df".
 
@@ -122,19 +138,21 @@ In this example, "speciesSub" is the lookup table containing genus, species, and
 To identify appropriate join keys we first need to know which field(s) are shared between the files (DataFrames). We might inspect both DataFrames to identify these columns. If we are lucky, both DataFrames will have columns with the same name that also contain the same data. If we are less lucky, we need to identify a (differently-named) column in each DataFrame that contains the same information.
 
 ```python
->>> speciesSub.columns
+speciesSub.columns
+
 Out[32]: Index([u'species_id', u'genus', u'species', u'taxa'], dtype='object')
 
->>>	surveySub.columns
+surveySub.columns
+
 Out[33]: Index([u'record_id', u'month', u'day', u'year', u'plot', u'species', u'sex', u'wgt'], dtype='object')
 ```
 
 In our example, the join key is the column containing the two-letter species identifier, which is called `species` in `surveys_df` and `species_id` in `species_df`.
 
+Now that we know the fields with the common species ID attributes in each DataFrame, we are ready to join our data. However there are [different types of joins.](http://blog.codinghorror.com/a-visual-explanation-of-sql-joins/). We also need to decide which type of join makes sense for our analysis.
 
 ## Inner joins
 
-Now that we know the fields with the common species ID attributes in each DataFrame, we are ready to join are data. However there are [different types of joins.](http://blog.codinghorror.com/a-visual-explanation-of-sql-joins/). We also need to decide which type if joins makes sense for our analysis.
 
 The most common type of join is called an _inner join_. An inner join combines two DataFrames based on a join key and returns a new DataFrame that contains **only** those rows that have matching values in *both* of the original DataFrames. 
 
@@ -156,6 +174,7 @@ The pandas function for performing joins is called `merge` and an Inner join is 
 
 **OUTPUT:**
 
+```
  	record_id 	month 	day 	year 	plot 	species_x 	sex 	wgt 	species_id 	genus 	species_y 	taxa
 0 	1 	7 	16 	1977 	2 	NL 	M 	NaN 	NL 	Neotoma 	albigula 	Rodent
 1 	2 	7 	16 	1977 	3 	NL 	M 	NaN 	NL 	Neotoma 	albigula 	Rodent
@@ -165,14 +184,14 @@ The pandas function for performing joins is called `merge` and an Inner join is 
 5 	8 	7 	16 	1977 	1 	DM 	M 	NaN 	DM 	Dipodomys 	merriami 	Rodent
 6 	9 	7 	16 	1977 	1 	DM 	F 	NaN 	DM 	Dipodomys 	merriami 	Rodent
 7 	7 	7 	16 	1977 	2 	PE 	F 	NaN 	PE 	Peromyscus 	eremicus 	Rodent
-
+```
 
 	
 The result of an inner join of `surveySub` and `speciesSub` is a new DataFrame that contains the combined set of columns from `surveySub` and `speciesSub`. It *only* contains rows that have two-letter species codes that are the same in both the surveysSub and speciesSub DataFrames. In other words, if a row in `surveySub` has a value of `species` that does *not* appear in the `species_id` column of `species`, it will not be included in the DataFrame returned by an inner join.  Similarly, if a row in `speciesSub` has a value of `species_id` that does *not* appear in the `species` column of `surveySub`, that row will not be included in the DataFrame returned by an inner join.
 
 The two DataFrames that we want to join are passed to the `merge` function using the `left` and `right` argument. The `left_on='species'` argument tells `merge` to use the `species` column as the join key from `surveySub` (the `left` DataFrame). Similarly , the `right_on='species_id'` argument tells `merge` to use the `species_id` column as the join key from `speciesSub` (the `right` DataFrame). For inner joins, the order of the `left` and `right` arguments does not matter.
 
-The result `merged_inner` DataFrame contains all the columns from `surveySub` (record id, month, day, etc.) as well as all the columns from `speciesSub` (species id, genus, species, and taxa). Because both original DataFrames contain a column named `species`, pandas automatically appends a `_x` to the column name from the `left` DataFrame and a `_y` to the column name from the `right` DataFrame.
+The result `merged_inner` DataFrame contains all of the columns from `surveySub` (record id, month, day, etc.) as well as all the columns from `speciesSub` (species id, genus, species, and taxa). Because both original DataFrames contain a column named `species`, pandas automatically appends a `_x` to the column name from the `left` DataFrame and a `_y` to the column name from the `right` DataFrame.
 
 Notice that `merged_inner` has fewer rows than `surveysSub`. This is an indication that there were rows in `surveys_df` with value(s) for `species` that do not exist as value(s) for `species_id` in `species_df`.
 
@@ -241,5 +260,9 @@ Create a new DataFrame by joining the contents of the surveys.csv and species.cs
 
 1. In the data folder, there is a plot `CSV` that contains information about the type associated with each plot. Use that data to summarize the number of plots by plot type. 
 
-# WOULD LIKE TO COME UP WIHT A FEW OTHER CHALLENGE ACTIVITIES 
-# it could be cool to have them create a species diversity index for each plot and then plot that. they'd have to do some summary stats and math and then plot. That could be fun and  more challenging. Maybe something that uses plot type species and surveys together to aggregate??
+2. Calculate a diversity index of your choice for control vs rodent exclosure plots. The index should consider both species abundance and number of species. You might choose to use the simply [biodiversity index described here](http://www.amnh.org/explore/curriculum-collections/biodiversity-counts/plant-ecology/how-to-calculate-a-biodiversity-index) which calculates diversity as
+
+The number of species in the plot / the total number of individuals in the plot = Biodiversity index.
+
+
+#################################################
