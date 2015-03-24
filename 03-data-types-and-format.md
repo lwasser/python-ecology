@@ -1,12 +1,12 @@
 # Data Types and Formats
 
-The format of individual columns and rows will impact analysis performed on a dataset read into python. For example, you can't perform mathematical calculations on string (character formatted) data. This might seem obvious, however sometimes numeric values  import into python as a string format. In turn, when you try to perform calculations on the numeric data, you get an error telling you they are strings.
+The format of individual columns and rows will impact analysis performed on a dataset read into python. For example, you can't perform mathematical calculations on a string (character formatted data). This might seem obvious, however sometimes numeric values  import into python in a string format. In turn, when you try to perform calculations on the numeric data, you get an error.
 
 In this lesson we will review ways to explore and better understand the structure and format of our data.
 
 ##Learning Objectives
 
-* Learn about character and numeric datatypes
+* Learn about character and numeric data types
 * Learn how to explore the structure of your data 
 * Understand NaN values and different ways to deal with them.
 
@@ -15,15 +15,15 @@ In this lesson we will review ways to explore and better understand the structur
 Let's begin by talking about data types. How information is stored in a DataFrame or a python object affects what we can do with it and the outputs of calculations as well. 
 
 #Numeric Data Types
-Numeric data types include integers or floats. A **floating point** number has decimal points even if that decimal point value is 0. For example: 1.13, 2.0 1234.345. If we have a column that contains both integers and floating point numbers, Pandas will assign the entire column to the float data type so the decimal points are not lost.
+Numeric data types include integers or floats. A **floating point** (known as a float) number has decimal points even if that decimal point value is 0. For example: 1.13, 2.0 1234.345. If we have a column that contains both integers and floating point numbers, Pandas will assign the entire column to the float data type so the decimal points are not lost.
 
-An **integer** will never have a decimal point. Thus 1.13 would be stored as 1. 1234.345 is stored as 1234. You will often see the data type Int64 in python which stands for 64 bit integer. The 64 simply refers to the memory allocated to store data in each cell which effectively relates to how many digits in can store in each "cell". 
+An **integer** will never have a decimal point. Thus 1.13 would be stored as 1. 1234.345 is stored as 1234. You will often see the data type Int64 in python which stands for 64 bit integer. The 64 simply refers to the memory allocated to store data in each cell which effectively relates to how many digits in can store in each "cell". Allocating space ahead of time allows computers to optimize storage and processing efficiency.
 
 ## Character Data Types 
-Objects, known as strings in Pandas, are values that contain numbers and / or characters. For example, a string might be a word, a sentence, or several sentences. A string might also be a plot name - ie 'plot1'. A string can also contain numbers. However **strings that contain numbers can not be used for mathematical operations**!  
+Objects, known as strings in Pandas, are values that contain numbers and / or characters. For example, a string might be a word, a sentence, or several sentences. A string (or Pandas object) might also be a plot name like 'plot1'. A string can also contain or consist of numbers. For instance, '1234' could be stored as a string. As could '10.23'. However **strings that contain numbers can not be used for mathematical operations**!  
 
 
-Pandas and base Python use different names for data types. For example a Pandas object is a string in python. More on this is in the table below:
+Pandas and base Python use slightly different names for data types. More on this is in the table below:
 
 |Name of Pandas type | Function | Base Python Equivalent |
 |------------|---------|-------------------------|
@@ -34,7 +34,7 @@ Pandas and base Python use different names for data types. For example a Pandas 
 
 
 ##Checking the format of our data
-Now that we're armed with a basic understanding of numeric and character data types, let's explore our data. We'll be working with the same surveys.csv dataset that we've used in previous lessons.
+Now that we're armed with a basic understanding of numeric and character data types, let's explore our data. We'll be working with the same `surveys.csv` dataset that we've used in previous lessons.
 
 ```python
 #note the pd.read_csv is used because we imported pandas as pd
@@ -75,13 +75,11 @@ surveys_df['record_id'].dtype
 
 dtype('int64')
 
-Int 64, is a 64 bit integer. 
-
-We can use the `dat.dtypes` command to view the data type for each column in a DataFrame. 
+The type `Int 64` tells us that python is storing each value within this column as a 64 bit integer. We can use the `dat.dtypes` command to view the data type for each column in a DataFrame (all at once). 
 
 	surveys_df.dtypes
 
-which gives **output**:
+which **returns**: 
 
 ```
 record_id      int64
@@ -140,11 +138,12 @@ We can also convert a floating point number to an integer. Notice that Python by
 
 # Working With Our Survey Data
 
-Getting back to our data, we can modify the format if we want. For instance, we could convert the `record_id` field to floating point values. 
+Getting back to our data, we can modify the format of values within our data, if we want. For instance, we could convert the `record_id` field to floating point values. 
 
 ```python
-surveys_df['record_id'] = surveys_df['record_id'].astype('float64')
-surveys_df['record_id'].dtype
+	#convert the record_id field from an integer to a float
+	surveys_df['record_id'] = surveys_df['record_id'].astype('float64')
+	surveys_df['record_id'].dtype
 ```
 
 **OUTPUT:**
@@ -152,11 +151,11 @@ surveys_df['record_id'].dtype
 dtype('float64')
 
 
-But what if we wanted to convert weight values to integers? 
+What happens if we try to convert weight values to integers? 
 
 	surveys_df['wgt'].astype('int')
 
-Notice that this throws a value error `ValueError: Cannot convert NA to integer`.  If we look at the wgt column in the surveys data we notice there are NaN (**N**ot **a** **N**umber) values. *NaN* values are undefined values that cannot be represented mathematically. Pandas, for example, will read an empty cell in a CSV or Excel sheet as a NaN. NaNs have some desirable properties: if we were to average the 'wgt' column without replacing our NaNs, Python would know to skip over those cells.
+Notice that this throws a value error `ValueError: Cannot convert NA to integer`.  If we look at the `wgt` column in the surveys data we notice that there are NaN (**N**ot **a** **N**umber) values. *NaN* values are undefined values that cannot be represented mathematically. Pandas, for example, will read an empty cell in a CSV or Excel sheet as a NaN. NaNs have some desirable properties: if we were to average the 'wgt' column without replacing our NaNs, Python would know to skip over those cells.
 
 ```python
 surveys_df['wgt'].mean()
@@ -164,15 +163,16 @@ surveys_df['wgt'].mean()
 ```
 
 ## Missing Data Values - NaN 
-Dealing with missing data values is always a challenge. It's sometimes hard to know why values are missing - was it because of a data entry error? Or data that someone was unable to collect? Should the value be 0? We need to know how  missing values are represented in the dataset in order to make good decisions. If we're lucky, we have some metadata that will tell us more about how null values were handled.
+Dealing with missing data values is always a challenge. It's sometimes hard to know why values are missing - was it because of a data entry error? Or data that someone was unable to collect? Should the value be 0? We need to know how missing values are represented in the dataset in order to make good decisions. If we're lucky, we have some metadata that will tell us more about how null values were handled.
 
-For instance, in some fields, like Remote Sensing, missing data values are often defined as -9999. Having a bunch of -9999 values in your data could really alter numeric calculations. Often in spreadsheets, cells are left empty where no data are available. Python will, by default replace those missing values with NaN.
+For instance, in some disciplines, like Remote Sensing, missing data values are often defined as -9999. Having a bunch of -9999 values in your data could really alter numeric calculations. Often in spreadsheets, cells are left empty where no data are available. Python will, by default replace those missing values with NaN. However it is good practice to get in the habit of intentionally marking cells that have no data, with a no data value! That way there are no questions in the future when you (or someone else) explores your data.
 
-Let's explore the NaN values in our data a bit further. Using the tools we learned in lesson 02, we can figure out how many rows contain NaN values for weight. We could also create a new subset from our data that only contains rows with weight values >= 0. 
+###Where Are the NaN's?
+Let's explore the NaN values in our data a bit further. Using the tools we learned in lesson 02, we can figure out how many rows contain NaN values for weight. We can also create a new subset from our data that only contains rows with weight values > 0 (ie select meaningful weight values). 
 
 	len(surveys_df[pd.isnull(surveys_df.wgt)])
 	#how many rows have wgt values?
-	len(surveys_df[surveys_df.wgt>=0])
+	len(surveys_df[surveys_df.wgt> 0])
 
 
 We can replace all NaN values with zeroes using the `.fillna()' method (after making a copy of the data so we don't lose our work. 
@@ -210,7 +210,3 @@ What we've learned:
 + How to change the data type 
 + What NaN values are, how they might be represented, and what this means for your work
 + How to replace NaN values, if desired
-
-
-
-# Need to build challenge lessons or something to make this lesson more interesting.
