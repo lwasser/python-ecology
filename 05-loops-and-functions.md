@@ -6,6 +6,14 @@ individual datasets by hand, much like we would do in a spreadsheet. The beauty
 of using a programming language like Python, though, comes from the ability to
 automate data processing through the use of loops and functions.
 
+#Learning Objectives
+
+* Learn the basics of a python for loop
+* Learn how to create a function
+* Learn how to loop through a directory of files, to automate processing
+* Understand the basics of conditional (if, then, else) statements
+* 
+
 ##For loops
 
 Loops allow us to repeat a workflow (or series of actions) a given number of
@@ -189,6 +197,15 @@ a step:
     This one stops at half a step: [0, 2, 4]
 ```
 
+Notice, that the output is the same if your range ends at 6.
+
+```python
+    print 'This one stops at half a step, too:', range(0,6,2)
+```
+```
+    This one stops at half a step, too: [0, 2, 4]
+```
+
 To write a loop that includes the year 2002, we must make the stop value for
 `range` an integer greater than that value but not so large that the sequence
 goes too far:
@@ -246,6 +263,18 @@ We can now add the rest of the steps we need to create separate text files:
 Look inside the `yearly_files` directory and check a couple of the files you
 just created to confirm that everything worked as expected.
 
+## Writing Unique FileNames
+Notice that the code above created a unique filename for each year. 
+
+	filename = 'data/yearly_files/surveys' + str(year) + '.csv'
+
+Let's break down the parts of this name:
+
+*  The first part is simply some text that specifies the directory to store our data file in (data/yearly_files/) and the first part of the file name (surveys): `'data/yearly_files/surveys'`
+*  We can concatenate this with a variable, in this case the year by using the plus `+` sign and the variable we want to add to the file name: `+ str(year)`
+*  Then we add the file extension as another text string: `+ '.csv'`
+
+Notice that we use single quotes to add text strings. The variable is not surrounded by quotes. This code produces the string `data/yearly_files/surveys2002.csv` which contains the path to the new filename AND the file name itself.
 
 ###Challenge:
 
@@ -254,7 +283,7 @@ show up as NaN - Not A Number - in the DataFrames and do not show up in the text
 files). Modify the for loop so that the entries with null values are not
 included in the yearly files.
 
-1. What happens if there is no data for a year in the sequence (for example,
+2. What happens if there is no data for a year in the sequence (for example,
 imagine we had used 1976 as the start year in `range`)?
 
 ## Building reusable and modular code with functions
@@ -621,3 +650,18 @@ have keyword arguments with default values
 data for a given year and display an alert to the user (Hint: use conditional
 statements and if loops to do this. For an extra challenge, use `try`
 statements!)
+
+3. The code below checks to see whether a directory exists and creates one if it doesn't. Add some code to your function that writes out the CSV files, to check for a directory to write to.
+
+```Python 
+	if 'dirNameHere' in os.listdir('.'):
+	    print 'Processed directory exists'
+	else:
+	    os.mkdir('dirNameHere')
+	    print 'Processed directory created' 
+```
+
+4. The code that you have written so far to loop through the years is good, however it is not necessarily reproducible with different datasets. For instance, what happens to the code if we have additional years of data in our CSV files? Using the tools that you learned in the previous activities, make a list of all years represented in the data. Then create a loop to process your data, that begins at the earliest year and ends at the latest year using that list.
+
+HINT: you can create a loop with a list as follows: `for years in yearList:`
+ 
